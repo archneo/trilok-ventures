@@ -1,0 +1,35 @@
+name: policy-checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  policy-file-safety:
+    name: policy-file-safety
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Block likely sensitive business docs from governance repo
+        run: |
+          set -euo pipefail
+          blocked=$(git ls-files | grep -Ei '(coa|phyto|pcp|invoice|customer|supplier).*(\.pdf|\.xlsx|\.csv|\.docx)$' || true)
+          if [ -n "$blocked" ]; then
+            echo "Found blocked files:" >&2
+            echo "$blocked" >&2
+            exit 1
+          fi
+
+  policy-export-gate:
+    name: policy-export-gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate export gate invariants
+        run: |
+          python3 scripts/check_export_allowed.py
