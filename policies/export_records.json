@@ -1,0 +1,12 @@
+[
+  {
+    "id": "LOT-2025-0019",
+    "data_class": "Green",
+    "export_allowed": true
+  },
+  {
+    "id": "LOT-2025-0020",
+    "data_class": "Red",
+    "export_allowed": false
+  }
+]

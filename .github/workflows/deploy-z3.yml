@@ -1,0 +1,59 @@
+name: deploy-z3
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Deployment environment
+        required: true
+        type: choice
+        options: [staging, production]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: deploy-${{ github.event.inputs.environment }}
+    runs-on: [self-hosted, z3]
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Retrieve short-lived deploy token from Vault via OIDC
+        env:
+          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+          VAULT_ROLE: ${{ secrets.VAULT_ROLE }}
+        run: |
+          set -euo pipefail
+          echo "OIDC->Vault exchange placeholder. Implement with your Vault auth path and claims mapping."
+
+      - name: Deploy infrastructure and app policies
+        run: |
+          set -euo pipefail
+          echo "Run Terraform/Ansible/OCC deploy here"
+          echo "Examples:"
+          echo "  terraform -chdir=infra/terraform plan"
+          echo "  ansible-playbook infra/ansible/site.yml"
+          echo "  ./nextcloud/occ/apply-policies.sh"
+
+      - name: Emit immutable deploy audit log
+        env:
+          IMMUTABLE_LOG_ENDPOINT: ${{ secrets.IMMUTABLE_LOG_ENDPOINT }}
+        run: |
+          set -euo pipefail
+          payload=$(cat <<JSON
+          {
+            "repo":"${GITHUB_REPOSITORY}",
+            "sha":"${GITHUB_SHA}",
+            "actor":"${GITHUB_ACTOR}",
+            "run_id":"${GITHUB_RUN_ID}",
+            "environment":"${{ github.event.inputs.environment }}",
+            "result":"success"
+          }
+          JSON
+          )
+          echo "$payload"
+          # curl -sS -X POST "$IMMUTABLE_LOG_ENDPOINT" -H 'content-type: application/json' -d "$payload"

@@ -1,0 +1,12 @@
+# Default ownership
+* @trilok-ventures/platform
+
+# Compliance-critical controls
+/policies/** @trilok-ventures/compliance @trilok-ventures/platform
+/.github/workflows/** @trilok-ventures/compliance @trilok-ventures/platform
+/nextcloud/occ/** @trilok-ventures/compliance @trilok-ventures/platform
+
+# Domain ownership
+/apps/odoo/** @trilok-ventures/platform
+/integration/bridge/** @trilok-ventures/platform
+/infra/** @trilok-ventures/platform
