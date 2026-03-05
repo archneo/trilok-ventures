@@ -1,0 +1,4 @@
+nextcloud:
+  host: nextcloud.local
+persistence:
+  enabled: true

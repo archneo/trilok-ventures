@@ -1,0 +1,8 @@
+name: Terraform
+on: [pull_request]
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "terraform fmt -check"

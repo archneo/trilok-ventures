@@ -1,0 +1,3 @@
+volumes:
+  postgres: /srv/docker/volumes/postgres
+  nextcloud_data: /srv/docker/volumes/nextcloud/data

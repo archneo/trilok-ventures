@@ -1,0 +1,4 @@
+services:
+  nextcloud:
+    image: nextcloud:29
+    ports: ["8081:80"]

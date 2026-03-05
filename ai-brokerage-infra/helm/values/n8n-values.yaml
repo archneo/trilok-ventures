@@ -1,0 +1,4 @@
+n8n:
+  host: n8n.local
+persistence:
+  enabled: true

@@ -1,0 +1,3 @@
+mode: standalone
+rootUser: minio
+rootPassword: minio123

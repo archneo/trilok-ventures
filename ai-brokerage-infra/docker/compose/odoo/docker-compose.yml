@@ -1,0 +1,4 @@
+services:
+  odoo:
+    image: odoo:17
+    ports: ["8069:8069"]
