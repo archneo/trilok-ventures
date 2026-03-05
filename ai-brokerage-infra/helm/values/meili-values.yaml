@@ -1,0 +1,3 @@
+masterKey: change-me
+persistence:
+  enabled: true

@@ -1,0 +1,5 @@
+http:
+  middlewares:
+    secureHeaders:
+      headers:
+        stsSeconds: 31536000

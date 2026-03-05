@@ -1,0 +1,6 @@
+http:
+  middlewares:
+    default-chain:
+      chain:
+        middlewares:
+          - secureHeaders

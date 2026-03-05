@@ -1,0 +1,5 @@
+env:
+  email: admin@example.com
+  password: change-me
+persistence:
+  enabled: true
