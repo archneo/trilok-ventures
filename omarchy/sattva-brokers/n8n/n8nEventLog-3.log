@@ -1,0 +1,1 @@
+{"__type":"$$EventMessageAudit","id":"896f67a6-5115-4de8-b973-992185c8873d","ts":"2026-03-20T01:22:38.213+00:00","eventName":"n8n.audit.user.api.created","message":"n8n.audit.user.api.created","payload":{"userId":"e65c8159-5e9f-43ca-819f-b7b50b0f844d","_email":"archneo925@proton.me","_firstName":"arch","_lastName":"neo","globalRole":"global:owner"}}

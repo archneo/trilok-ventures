@@ -1,0 +1,102 @@
+# Dokploy Compose File for Sattva Brokers MVP Stack
+# This file defines the core services: Odoo, Nextcloud, and n8n.
+# Save this as 'dokploy.yml' and deploy via the Dokploy UI or CLI.
+
+version: '3.8'
+
+services:
+  odoo:
+    image: odoo:16.0
+    container_name: sattva-odoo
+    depends_on:
+      - odoo_db
+    ports:
+      - "8069:8069"
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - /srv/sattva-brokers/odoo-addons:/mnt/extra-addons
+    environment:
+      - HOST=odoo_db
+      - USER=odoo
+      - PASSWORD=my_odoo_password # IMPORTANT: Change in production
+    networks:
+      - sattva-net
+
+  odoo_db:
+    image: postgres:15
+    container_name: sattva-odoo-db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=my_odoo_password # IMPORTANT: Change in production
+    volumes:
+      - odoo_db_data:/var/lib/postgresql/data
+    networks:
+      - sattva-net
+
+  nextcloud:
+    image: nextcloud:latest
+    container_name: sattva-nextcloud
+    ports:
+      - "8080:80"
+    depends_on:
+      - nextcloud_db
+      - nextcloud_redis
+    volumes:
+      - nextcloud_data:/var/www/html
+    environment:
+      - MYSQL_HOST=nextcloud_db
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=my_nextcloud_password # IMPORTANT: Change in production
+      - REDIS_HOST=nextcloud_redis
+    networks:
+      - sattva-net
+
+  nextcloud_db:
+    image: mariadb:10.5
+    container_name: sattva-nextcloud-db
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    environment:
+      - MYSQL_ROOT_PASSWORD=my_root_password # IMPORTANT: Change in production
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=my_nextcloud_password # IMPORTANT: Change in production
+    volumes:
+      - nextcloud_db_data:/var/lib/mysql
+    networks:
+      - sattva-net
+
+  nextcloud_redis:
+    image: redis:latest
+    container_name: sattva-nextcloud-redis
+    networks:
+      - sattva-net
+
+  n8n:
+    image: n8nio/n8n
+    container_name: sattva-n8n
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    environment:
+      - N8N_HOST={{DOKPLOY_HOST}}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://{{DOKPLOY_HOST}}/
+      - GENERIC_TIMEZONE=America/Toronto
+    networks:
+      - sattva-net
+
+volumes:
+  odoo_data:
+  odoo_db_data:
+  nextcloud_data:
+  nextcloud_db_data:
+  n8n_data:
+
+networks:
+  sattva-net:
+    driver: bridge
